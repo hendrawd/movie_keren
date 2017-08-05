@@ -1,6 +1,6 @@
-package keren.movie.moviekeren.retrofit;
+package keren.movie.moviekeren.network.retrofit;
 
-import keren.movie.moviekeren.model.Movie;
+import keren.movie.moviekeren.network.model.Movie;
 import retrofit2.Call;
 import retrofit2.http.GET;
 

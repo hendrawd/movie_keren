@@ -1,5 +1,5 @@
 
-package keren.movie.moviekeren.model;
+package keren.movie.moviekeren.network.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
