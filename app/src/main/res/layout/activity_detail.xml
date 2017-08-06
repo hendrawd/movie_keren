@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="@dimen/detail_view_group_padding"
+    tools:context="keren.movie.moviekeren.activity.DetailActivity">
+
+    <!--original title-->
+    <TextView
+        android:id="@+id/tv_original_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/detail_content_padding"
+        tools:text="Ganteng Ganteng Serigala"/>
+
+    <!--movie poster image thumbnail-->
+    <ImageView
+        android:id="@+id/iv_poster_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/detail_content_padding"
+        tools:src="@drawable/poster"/>
+
+    <!--A plot synopsis (called overview in the api)-->
+    <TextView
+        android:id="@+id/tv_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/detail_content_padding"
+        tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer hendrerit ultricies magna, eu tempus leo molestie quis. Nulla suscipit sodales sem in convallis. Curabitur dictum lectus sem, quis dictum nisi pellentesque id. Cras scelerisque mi ultricies ligula rhoncus lacinia. Vivamus egestas tellus eros, nec condimentum enim ornare non. Donec mattis sem et placerat condimentum. Integer accumsan molestie velit, in pellentesque nisl luctus eget. Nulla facilisi. Proin feugiat dui enim, sed eleifend metus viverra vel. Proin vestibulum dolor ac placerat eleifend. In hac habitasse platea dictumst. Pellentesque placerat fringilla ante quis dapibus. Duis lobortis pellentesque quam quis dignissim. Vestibulum cursus, ligula ut bibendum eleifend, odio augue iaculis urna, eu ornare odio est ut risus. Ut sollicitudin non tortor id pulvinar. Curabitur rhoncus libero sed dolor varius, quis sodales risus venenatis."/>
+
+    <!--user rating (called vote_average in the api)-->
+    <TextView
+        android:id="@+id/tv_rating"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/detail_content_padding"
+        tools:text="2.57/5.00"
+        />
+
+    <!--release date-->
+    <TextView
+        android:id="@+id/tv_release_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/detail_content_padding"
+        tools:text="2 May 2017"/>
+
+</LinearLayout>

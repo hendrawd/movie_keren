@@ -92,6 +92,15 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
     }
 
     /**
+     * Getter untuk mendapatkan data movies
+     *
+     * @return ListView movie list
+     */
+    public List<Result> getData() {
+        return movieList;
+    }
+
+    /**
      * Kelas yang digunakan untuk menyimpan penunjuk(reference) dari View-View yang dibuat di XML
      */
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
