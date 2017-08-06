@@ -5,7 +5,9 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 
 import java.util.List;
 
@@ -32,7 +34,37 @@ public class MainActivity extends AppCompatActivity implements Callback<Movie>, 
         setContentView(R.layout.activity_main);
         mRecyclerView = (RecyclerView) findViewById(R.id.rv);
         initRecyclerView();
-        getMovieList();
+        getMovieList("popular");
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // mendapatkan reference dari MenuInflater
+        final MenuInflater inflater = getMenuInflater();
+
+        // inflate menu yang kita buat(menu_main)
+        // ke dalam menu di activity ini
+        inflater.inflate(R.menu.menu_main, menu);
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int itemId = item.getItemId();
+
+        switch (itemId) {
+            case R.id.action_popular:
+                CustomToast.show(this, "Action popular");
+                getMovieList("popular");
+                return true;
+            case R.id.action_top_rated:
+                CustomToast.show(this, "Action top rated");
+                getMovieList("top_rated");
+                return true;
+        }
+
+        return false;
     }
 
     private void initRecyclerView() {
@@ -45,10 +77,10 @@ public class MainActivity extends AppCompatActivity implements Callback<Movie>, 
     /**
      * Mendapatkan movie list dari network menggunakan retrofit
      */
-    private void getMovieList() {
+    private void getMovieList(String category) {
         final Call<Movie> call = ServiceGenerator
                 .createService(MovieService.class)
-                .getPopularMovies();
+                .getMovies(category);
 
         call.enqueue(MainActivity.this);
     }
@@ -56,9 +88,6 @@ public class MainActivity extends AppCompatActivity implements Callback<Movie>, 
     private void showMovieList(List<Result> movieList) {
         MovieAdapter movieAdapter = new MovieAdapter(MainActivity.this, movieList);
         mRecyclerView.setAdapter(movieAdapter);
-        for (Result result : movieList) {
-            Log.v(TAG, result.getTitle());
-        }
     }
 
     /**

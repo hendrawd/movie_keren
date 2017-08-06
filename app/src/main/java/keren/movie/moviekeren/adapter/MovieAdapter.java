@@ -30,6 +30,12 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
     private List<Result> movieList;
     private ItemClickListener itemClickListener;
 
+    /**
+     * Constructor
+     *
+     * @param itemClickListener
+     * @param movieList
+     */
     public MovieAdapter(@NonNull ItemClickListener itemClickListener,
                         @NonNull List<Result> movieList) {
         this.movieList = movieList;
@@ -61,7 +67,11 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
     public void onBindViewHolder(ViewHolder holder, int position) {
         final Context context = holder.itemView.getContext();
         Result data = movieList.get(position);
+
+        // set data ke TextView title
         holder.tvTitle.setText(data.getTitle());
+
+        // set poster image ke ImageView
         Picasso.with(context)
                 .load(
                         UrlComposer.getPosterUrl(
