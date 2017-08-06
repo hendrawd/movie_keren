@@ -1,5 +1,6 @@
-package keren.movie.moviekeren;
+package keren.movie.moviekeren.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -11,12 +12,12 @@ import android.view.MenuItem;
 
 import java.util.List;
 
+import keren.movie.moviekeren.R;
 import keren.movie.moviekeren.adapter.MovieAdapter;
 import keren.movie.moviekeren.network.model.Movie;
 import keren.movie.moviekeren.network.model.Result;
 import keren.movie.moviekeren.network.retrofit.MovieService;
 import keren.movie.moviekeren.network.retrofit.ServiceGenerator;
-import keren.movie.moviekeren.util.CustomToast;
 import keren.movie.moviekeren.util.GridSpacingItemDecoration;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -25,7 +26,6 @@ import retrofit2.Response;
 public class MainActivity extends AppCompatActivity implements Callback<Movie>, MovieAdapter.ItemClickListener {
 
     private static final String TAG = "MainActivity";
-    private static final int SPAN_COUNT = 2;
     private RecyclerView mRecyclerView;
 
     @Override
@@ -55,23 +55,29 @@ public class MainActivity extends AppCompatActivity implements Callback<Movie>, 
 
         switch (itemId) {
             case R.id.action_popular:
-                CustomToast.show(this, "Action popular");
                 getMovieList("popular");
                 return true;
             case R.id.action_top_rated:
-                CustomToast.show(this, "Action top rated");
                 getMovieList("top_rated");
+                return true;
+            case R.id.action_favorite:
+                loadFavoriteMoviesFromDb();
                 return true;
         }
 
         return false;
     }
 
+    private void loadFavoriteMoviesFromDb() {
+
+    }
+
     private void initRecyclerView() {
-        GridLayoutManager layoutManager = new GridLayoutManager(MainActivity.this, SPAN_COUNT);
+        Integer spanCount = getResources().getInteger(R.integer.span_count);
+        GridLayoutManager layoutManager = new GridLayoutManager(MainActivity.this, spanCount);
         mRecyclerView.setLayoutManager(layoutManager);
         int gridSpacing = getResources().getDimensionPixelSize(R.dimen.grid_spacing);
-        mRecyclerView.addItemDecoration(new GridSpacingItemDecoration(SPAN_COUNT, gridSpacing, true));
+        mRecyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount, gridSpacing, true));
     }
 
     /**
@@ -123,7 +129,25 @@ public class MainActivity extends AppCompatActivity implements Callback<Movie>, 
      */
     @Override
     public void onItemClick(int position) {
-        // TODO open detail activity
-        CustomToast.show(MainActivity.this, "Item with position " + position + " clicked");
+        // Menampilkan Toast yang menunjukkan posisi yang diklik
+        // CustomToast.show(MainActivity.this, "Item with position " + position + " clicked");
+
+        // Mendapatkan MovieAdapter
+        MovieAdapter adapter = (MovieAdapter) mRecyclerView.getAdapter();
+
+        // Mendapatkan data dari MovieAdapter
+        List<Result> movieList = adapter.getData();
+
+        // Membuat Intent untuk membuka DetailActivity
+        Intent openDetailActivityIntent = new Intent(MainActivity.this, DetailActivity.class);
+
+        // Mendapatkan data dengan posisi yang diklik
+        Result movieData = movieList.get(position);
+
+        // Set data ke Intent
+        openDetailActivityIntent.putExtra(DetailActivity.MOVIE_KEY, movieData);
+
+        // Start DetailActivity
+        startActivity(openDetailActivityIntent);
     }
 }
