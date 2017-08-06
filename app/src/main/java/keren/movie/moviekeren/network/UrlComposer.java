@@ -1,6 +1,8 @@
-package keren.movie.moviekeren;
+package keren.movie.moviekeren.network;
 
 import android.net.Uri;
+
+import keren.movie.moviekeren.BuildConfig;
 
 /**
  * Url composer for themoviedb.org APIs

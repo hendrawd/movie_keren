@@ -3,4 +3,14 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+
+    <!--transparansi di color ditentukan oleh 2 digit pertama-->
+    <!--untuk lebih jelasnya tentang value transparansi, silakan lihat di-->
+    <!--http://blog.mokrzycki.io/2015/07/converting-transparency-color-to-hex/-->
+    <!--jadi sistemnya disini adalah ARGB(Alpha Red Green Blue)-->
+    <!--B3 transparency-->
+    <!--FF pertama adalah bagian warna merah-->
+    <!--FF kedua adalah bagian warna hijau-->
+    <!--FF ketiga adalah bagian warna biru-->
+    <color name="whiteTransparent70Percent">#B3FFFFFF</color>
 </resources>

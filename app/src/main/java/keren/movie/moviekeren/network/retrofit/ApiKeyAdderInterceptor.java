@@ -1,4 +1,4 @@
-package keren.movie.moviekeren.retrofit;
+package keren.movie.moviekeren.network.retrofit;
 
 import android.support.annotation.NonNull;
 

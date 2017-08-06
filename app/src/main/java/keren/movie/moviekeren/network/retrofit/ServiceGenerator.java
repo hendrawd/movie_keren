@@ -1,4 +1,4 @@
-package keren.movie.moviekeren.retrofit;
+package keren.movie.moviekeren.network.retrofit;
 
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
@@ -24,7 +24,7 @@ public class ServiceGenerator {
                     .addConverterFactory(GsonConverterFactory.create())
                     .client(sHttpClient.build());
 
-    public static <S> S createService(Class<S> serviceClass) {
+    public static <T> T createService(Class<T> serviceClass) {
         return sBuilder.build().create(serviceClass);
     }
 }
