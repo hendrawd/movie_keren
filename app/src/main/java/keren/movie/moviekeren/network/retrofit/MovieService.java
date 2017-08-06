@@ -3,6 +3,7 @@ package keren.movie.moviekeren.network.retrofit;
 import keren.movie.moviekeren.network.model.Movie;
 import retrofit2.Call;
 import retrofit2.http.GET;
+import retrofit2.http.Path;
 
 /**
  * @author hendrawd on 7/30/17
@@ -10,6 +11,6 @@ import retrofit2.http.GET;
 
 public interface MovieService {
 
-    @GET("movie/popular")
-    Call<Movie> getPopularMovies();
+    @GET("movie/{category}")
+    Call<Movie> getMovies(@Path("category") String category);
 }
