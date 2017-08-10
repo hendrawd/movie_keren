@@ -14,8 +14,8 @@ import java.util.List;
 
 import keren.movie.moviekeren.R;
 import keren.movie.moviekeren.adapter.MovieAdapter;
+import keren.movie.moviekeren.network.model.MovieResponse;
 import keren.movie.moviekeren.network.model.Movie;
-import keren.movie.moviekeren.network.model.Result;
 import keren.movie.moviekeren.network.retrofit.MovieService;
 import keren.movie.moviekeren.network.retrofit.ServiceGenerator;
 import keren.movie.moviekeren.util.GridSpacingItemDecoration;
@@ -23,11 +23,11 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity implements Callback<Movie>, MovieAdapter.ItemClickListener {
+public class MainActivity extends AppCompatActivity implements Callback<MovieResponse>, MovieAdapter.ItemClickListener {
 
     private static final String TAG = "MainActivity";
     private RecyclerView mRecyclerView;
-    private Call<Movie> call;
+    private Call<MovieResponse> call;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,7 +101,7 @@ public class MainActivity extends AppCompatActivity implements Callback<Movie>, 
         call.enqueue(MainActivity.this);
     }
 
-    private void showMovieList(List<Result> movieList) {
+    private void showMovieList(List<Movie> movieList) {
         MovieAdapter movieAdapter = new MovieAdapter(MainActivity.this, movieList);
         mRecyclerView.setAdapter(movieAdapter);
     }
@@ -113,10 +113,10 @@ public class MainActivity extends AppCompatActivity implements Callback<Movie>, 
      * @param response Response
      */
     @Override
-    public void onResponse(@NonNull Call<Movie> call, @NonNull Response<Movie> response) {
-        Movie movie = response.body();
-        if (movie != null) {
-            List<Result> movieList = movie.getResults();
+    public void onResponse(@NonNull Call<MovieResponse> call, @NonNull Response<MovieResponse> response) {
+        MovieResponse movieResponse = response.body();
+        if (movieResponse != null) {
+            List<Movie> movieList = movieResponse.getResults();
             showMovieList(movieList);
         }
     }
@@ -128,7 +128,7 @@ public class MainActivity extends AppCompatActivity implements Callback<Movie>, 
      * @param t    Throwable yang berisi error
      */
     @Override
-    public void onFailure(@NonNull Call<Movie> call, @NonNull Throwable t) {
+    public void onFailure(@NonNull Call<MovieResponse> call, @NonNull Throwable t) {
         //TODO implement action if there is a failure
     }
 
@@ -146,13 +146,13 @@ public class MainActivity extends AppCompatActivity implements Callback<Movie>, 
         MovieAdapter adapter = (MovieAdapter) mRecyclerView.getAdapter();
 
         // Mendapatkan data dari MovieAdapter
-        List<Result> movieList = adapter.getData();
+        List<Movie> movieList = adapter.getData();
 
         // Membuat Intent untuk membuka DetailActivity
         Intent openDetailActivityIntent = new Intent(MainActivity.this, DetailActivity.class);
 
         // Mendapatkan data dengan posisi yang diklik
-        Result movieData = movieList.get(position);
+        Movie movieData = movieList.get(position);
 
         // Set data ke Intent
         openDetailActivityIntent.putExtra(DetailActivity.MOVIE_KEY, movieData);

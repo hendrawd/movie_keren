@@ -15,7 +15,7 @@ import java.util.List;
 
 import keren.movie.moviekeren.R;
 import keren.movie.moviekeren.network.UrlComposer;
-import keren.movie.moviekeren.network.model.Result;
+import keren.movie.moviekeren.network.model.Movie;
 
 /**
  * @author hendrawd on 8/5/17
@@ -27,7 +27,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         void onItemClick(int position);
     }
 
-    private List<Result> movieList;
+    private List<Movie> movieList;
     private ItemClickListener itemClickListener;
 
     /**
@@ -37,7 +37,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
      * @param movieList
      */
     public MovieAdapter(@NonNull ItemClickListener itemClickListener,
-                        @NonNull List<Result> movieList) {
+                        @NonNull List<Movie> movieList) {
         this.movieList = movieList;
         this.itemClickListener = itemClickListener;
     }
@@ -66,7 +66,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         final Context context = holder.itemView.getContext();
-        Result data = movieList.get(position);
+        Movie data = movieList.get(position);
 
         // set data ke TextView title
         holder.tvTitle.setText(data.getTitle());
@@ -96,7 +96,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
      *
      * @return ListView movie list
      */
-    public List<Result> getData() {
+    public List<Movie> getData() {
         return movieList;
     }
 

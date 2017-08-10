@@ -14,7 +14,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import keren.movie.moviekeren.R;
 import keren.movie.moviekeren.network.UrlComposer;
-import keren.movie.moviekeren.network.model.Result;
+import keren.movie.moviekeren.network.model.Movie;
 
 public class DetailActivity extends AppCompatActivity {
 
@@ -40,7 +40,7 @@ public class DetailActivity extends AppCompatActivity {
         setupBackButton();
 
         // mendapatkan data yang dipassing dari MainActivity
-        Result data = getIntent().getParcelableExtra(MOVIE_KEY);
+        Movie data = getIntent().getParcelableExtra(MOVIE_KEY);
 
         // set text ke original title
         tvOriginalTitle.setText(data.getOriginalTitle());
