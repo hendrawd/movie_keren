@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity implements Callback<MovieRes
 
     private static final String TAG = "MainActivity";
     private RecyclerView mRecyclerView;
-    private Call<MovieResponse> call;
+    private Call<MovieResponse> mCall;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,9 +41,9 @@ public class MainActivity extends AppCompatActivity implements Callback<MovieRes
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (call != null) {
+        if (mCall != null) {
             //cancel retrofit call kalau activity sudah didestroy
-            call.cancel();
+            mCall.cancel();
         }
     }
 
@@ -94,13 +94,13 @@ public class MainActivity extends AppCompatActivity implements Callback<MovieRes
      * Mendapatkan movie list dari network menggunakan retrofit
      */
     private void requestMovieList(String category) {
-        call = ServiceGenerator
+        mCall = ServiceGenerator
                 .createService(MovieService.class)
                 .getMovies(category);
 
         // Kenapa implement interface daripada memakai anonymous class?
         // Berasal dari buku Effective Java, Item 5: Avoid creating unnecessary objects
-        call.enqueue(MainActivity.this);
+        mCall.enqueue(MainActivity.this);
     }
 
     private void showMovieList(List<Movie> movieList) {

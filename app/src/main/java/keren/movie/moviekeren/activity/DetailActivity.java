@@ -6,8 +6,11 @@ import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
@@ -25,6 +28,7 @@ import keren.movie.moviekeren.network.model.Video;
 import keren.movie.moviekeren.network.model.VideoResponse;
 import keren.movie.moviekeren.network.retrofit.MovieService;
 import keren.movie.moviekeren.network.retrofit.ServiceGenerator;
+import keren.movie.moviekeren.util.CustomToast;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -34,8 +38,8 @@ public class DetailActivity extends AppCompatActivity {
     private static final String TAG = "DetailActivity";
     public static final String MOVIE_KEY = "movie";
 
-    private Call<VideoResponse> requestVideocall;
-    private Call<ReviewResponse> requestReviewCall;
+    private Call<VideoResponse> mRequestVideoCall;
+    private Call<ReviewResponse> mRequestReviewCall;
 
     @BindView(R.id.tv_original_title)
     TextView tvOriginalTitle;
@@ -47,6 +51,10 @@ public class DetailActivity extends AppCompatActivity {
     TextView tvRating;
     @BindView(R.id.tv_release_date)
     TextView tvReleaseDate;
+    @BindView(R.id.ll_video_container)
+    LinearLayout llVideoContainer;
+    @BindView(R.id.ll_review_container)
+    LinearLayout llReviewContainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,8 +98,9 @@ public class DetailActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         // cancelling calls if activity already destroyed, to avoid activity leak
-        requestVideocall.cancel();
-        requestReviewCall.cancel();
+        // cancelling calls if activity already destroyed, to avoid activity leak
+        mRequestVideoCall.cancel();
+        mRequestReviewCall.cancel();
     }
 
     /**
@@ -105,14 +114,27 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.menu_detail, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int actionId = item.getItemId();
 
         // Handle back button click
-        if (actionId == android.R.id.home) {
-            // kembali ke parent Activity
-            NavUtils.navigateUpFromSameTask(this);
-            return true;
+        switch (actionId) {
+            case android.R.id.home: {
+                // kembali ke parent Activity
+                NavUtils.navigateUpFromSameTask(this);
+                return true;
+            }
+            case R.id.action_favorite: {
+                CustomToast.show(this, "Action favorite clicked!");
+                return true;
+            }
         }
 
         return false;
@@ -122,11 +144,11 @@ public class DetailActivity extends AppCompatActivity {
      * Mendapatkan video list dari network menggunakan retrofit
      */
     private void requestVideoList(Integer movieId) {
-        requestVideocall = ServiceGenerator
+        mRequestVideoCall = ServiceGenerator
                 .createService(MovieService.class)
                 .getVideos(movieId);
 
-        requestVideocall.enqueue(new Callback<VideoResponse>() {
+        mRequestVideoCall.enqueue(new Callback<VideoResponse>() {
             @Override
             public void onResponse(@NonNull Call<VideoResponse> call, @NonNull Response<VideoResponse> response) {
                 VideoResponse videoResponse = response.body();
@@ -149,11 +171,11 @@ public class DetailActivity extends AppCompatActivity {
      * Mendapatkan review list dari network menggunakan retrofit
      */
     private void requestReviewList(Integer movieId) {
-        requestReviewCall = ServiceGenerator
+        mRequestReviewCall = ServiceGenerator
                 .createService(MovieService.class)
                 .getReviews(movieId);
 
-        requestReviewCall.enqueue(new Callback<ReviewResponse>() {
+        mRequestReviewCall.enqueue(new Callback<ReviewResponse>() {
             @Override
             public void onResponse(@NonNull Call<ReviewResponse> call, @NonNull Response<ReviewResponse> response) {
                 ReviewResponse reviewResponse = response.body();
