@@ -4,4 +4,7 @@
     <string name="top_rated">Top Rated</string>
     <string name="popular">Popular</string>
     <string name="favorite">Favorite</string>
+
+    <string name="category_api_popular" translatable="false">popular</string>
+    <string name="category_api_top_rated" translatable="false">top_rated</string>
 </resources>

@@ -27,6 +27,7 @@ public class MainActivity extends AppCompatActivity implements Callback<Movie>, 
 
     private static final String TAG = "MainActivity";
     private RecyclerView mRecyclerView;
+    private Call<Movie> call;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +35,16 @@ public class MainActivity extends AppCompatActivity implements Callback<Movie>, 
         setContentView(R.layout.activity_main);
         mRecyclerView = (RecyclerView) findViewById(R.id.rv);
         initRecyclerView();
-        getMovieList("popular");
+        getMovieList(getString(R.string.category_api_popular));
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (call != null) {
+            //cancel retrofit call kalau activity sudah didestroy
+            call.cancel();
+        }
     }
 
     @Override
@@ -55,10 +65,10 @@ public class MainActivity extends AppCompatActivity implements Callback<Movie>, 
 
         switch (itemId) {
             case R.id.action_popular:
-                getMovieList("popular");
+                getMovieList(getString(R.string.category_api_popular));
                 return true;
             case R.id.action_top_rated:
-                getMovieList("top_rated");
+                getMovieList(getString(R.string.category_api_top_rated));
                 return true;
             case R.id.action_favorite:
                 loadFavoriteMoviesFromDb();
@@ -84,7 +94,7 @@ public class MainActivity extends AppCompatActivity implements Callback<Movie>, 
      * Mendapatkan movie list dari network menggunakan retrofit
      */
     private void getMovieList(String category) {
-        final Call<Movie> call = ServiceGenerator
+        call = ServiceGenerator
                 .createService(MovieService.class)
                 .getMovies(category);
 
