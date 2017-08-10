@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity implements Callback<MovieRes
         setContentView(R.layout.activity_main);
         mRecyclerView = (RecyclerView) findViewById(R.id.rv);
         initRecyclerView();
-        getMovieList(getString(R.string.category_api_popular));
+        requestMovieList(getString(R.string.category_api_popular));
     }
 
     @Override
@@ -65,10 +65,10 @@ public class MainActivity extends AppCompatActivity implements Callback<MovieRes
 
         switch (itemId) {
             case R.id.action_popular:
-                getMovieList(getString(R.string.category_api_popular));
+                requestMovieList(getString(R.string.category_api_popular));
                 return true;
             case R.id.action_top_rated:
-                getMovieList(getString(R.string.category_api_top_rated));
+                requestMovieList(getString(R.string.category_api_top_rated));
                 return true;
             case R.id.action_favorite:
                 loadFavoriteMoviesFromDb();
@@ -93,11 +93,13 @@ public class MainActivity extends AppCompatActivity implements Callback<MovieRes
     /**
      * Mendapatkan movie list dari network menggunakan retrofit
      */
-    private void getMovieList(String category) {
+    private void requestMovieList(String category) {
         call = ServiceGenerator
                 .createService(MovieService.class)
                 .getMovies(category);
 
+        // Kenapa implement interface daripada memakai anonymous class?
+        // Berasal dari buku Effective Java, Item 5: Avoid creating unnecessary objects
         call.enqueue(MainActivity.this);
     }
 
