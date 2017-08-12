@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -132,6 +133,7 @@ public class MainActivity extends AppCompatActivity implements Callback<MovieRes
     @Override
     public void onFailure(@NonNull Call<MovieResponse> call, @NonNull Throwable t) {
         //TODO implement action if there is a failure
+        Log.d(TAG, "onFailure: " + t.getLocalizedMessage());
     }
 
     /**

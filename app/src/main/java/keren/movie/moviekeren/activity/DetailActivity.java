@@ -3,6 +3,7 @@ package keren.movie.moviekeren.activity;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NavUtils;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -19,7 +20,9 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.realm.Realm;
 import keren.movie.moviekeren.R;
+import keren.movie.moviekeren.db.FavoriteMovie;
 import keren.movie.moviekeren.network.UrlComposer;
 import keren.movie.moviekeren.network.model.Movie;
 import keren.movie.moviekeren.network.model.Review;
@@ -28,7 +31,6 @@ import keren.movie.moviekeren.network.model.Video;
 import keren.movie.moviekeren.network.model.VideoResponse;
 import keren.movie.moviekeren.network.retrofit.MovieService;
 import keren.movie.moviekeren.network.retrofit.ServiceGenerator;
-import keren.movie.moviekeren.util.CustomToast;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -40,6 +42,8 @@ public class DetailActivity extends AppCompatActivity {
 
     private Call<VideoResponse> mRequestVideoCall;
     private Call<ReviewResponse> mRequestReviewCall;
+    private MenuItem mMenuItemFavorite;
+    private boolean mIsFavoriteMovie;
 
     @BindView(R.id.tv_original_title)
     TextView tvOriginalTitle;
@@ -65,7 +69,7 @@ public class DetailActivity extends AppCompatActivity {
         setupBackButton();
 
         // mendapatkan data yang dipassing dari MainActivity
-        Movie data = getIntent().getParcelableExtra(MOVIE_KEY);
+        Movie data = getMovieData();
 
         // set text ke original title
         tvOriginalTitle.setText(data.getOriginalTitle());
@@ -98,7 +102,6 @@ public class DetailActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         // cancelling calls if activity already destroyed, to avoid activity leak
-        // cancelling calls if activity already destroyed, to avoid activity leak
         mRequestVideoCall.cancel();
         mRequestReviewCall.cancel();
     }
@@ -117,7 +120,9 @@ public class DetailActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.menu_detail, menu);
-        return super.onCreateOptionsMenu(menu);
+        mMenuItemFavorite = menu.findItem(R.id.action_favorite);
+        setFavoriteMenuItemFirstState();
+        return true;
     }
 
     @Override
@@ -132,12 +137,83 @@ public class DetailActivity extends AppCompatActivity {
                 return true;
             }
             case R.id.action_favorite: {
-                CustomToast.show(this, "Action favorite clicked!");
+                toggleFavorite();
                 return true;
             }
         }
 
         return false;
+    }
+
+    private Movie getMovieData() {
+        return getIntent().getParcelableExtra(MOVIE_KEY);
+    }
+
+    private void toggleFavorite() {
+        final Movie movie = getMovieData();
+        // best practice for using realm
+        // https://medium.com/@Zhuinden/how-to-use-realm-for-android-like-a-champ-and-how-to-tell-if-youre-doing-it-wrong-ac4f66b7f149
+        Realm realm = null;
+        try {
+            realm = Realm.getDefaultInstance();
+            realm.executeTransaction(
+                    new Realm.Transaction() {
+                        @Override
+                        public void execute(Realm realm) {
+                            mIsFavoriteMovie = realm.where(FavoriteMovie.class)
+                                    .equalTo("id", movie.getId())
+                                    .count() > 0;
+                            if (mIsFavoriteMovie) {
+                                realm.where(FavoriteMovie.class)
+                                        .equalTo("id", movie.getId())
+                                        .findAll()
+                                        .deleteAllFromRealm();
+                            } else {
+                                realm.insert(FavoriteMovie.fromMovie(movie));
+                            }
+                            mIsFavoriteMovie = !mIsFavoriteMovie;
+                            toggleFavoriteMenuIcon();
+                        }
+                    }
+            );
+        } finally {
+            if (realm != null) {
+                realm.close();
+            }
+        }
+    }
+
+    private void toggleFavoriteMenuIcon() {
+        mMenuItemFavorite.setIcon(
+                ResourcesCompat.getDrawable(
+                        getResources(),
+                        mIsFavoriteMovie ? R.drawable.ic_favorite : R.drawable.ic_favorite_border,
+                        null
+                )
+        );
+    }
+
+    private void setFavoriteMenuItemFirstState() {
+        final Movie movie = getMovieData();
+        Realm realm = null;
+        try {
+            realm = Realm.getDefaultInstance();
+            realm.executeTransaction(
+                    new Realm.Transaction() {
+                        @Override
+                        public void execute(Realm realm) {
+                            mIsFavoriteMovie = realm.where(FavoriteMovie.class)
+                                    .equalTo("id", movie.getId())
+                                    .count() > 0;
+                            toggleFavoriteMenuIcon();
+                        }
+                    }
+            );
+        } finally {
+            if (realm != null) {
+                realm.close();
+            }
+        }
     }
 
     /**
