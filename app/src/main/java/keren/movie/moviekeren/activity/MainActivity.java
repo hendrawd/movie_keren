@@ -11,14 +11,19 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import io.realm.Realm;
+import io.realm.RealmResults;
 import keren.movie.moviekeren.R;
 import keren.movie.moviekeren.adapter.MovieAdapter;
-import keren.movie.moviekeren.network.model.MovieResponse;
+import keren.movie.moviekeren.db.FavoriteMovie;
 import keren.movie.moviekeren.network.model.Movie;
+import keren.movie.moviekeren.network.model.MovieResponse;
 import keren.movie.moviekeren.network.retrofit.MovieService;
 import keren.movie.moviekeren.network.retrofit.ServiceGenerator;
+import keren.movie.moviekeren.util.CustomToast;
 import keren.movie.moviekeren.util.GridSpacingItemDecoration;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -27,8 +32,10 @@ import retrofit2.Response;
 public class MainActivity extends AppCompatActivity implements Callback<MovieResponse>, MovieAdapter.ItemClickListener {
 
     private static final String TAG = "MainActivity";
+    private static final int REQUEST_CODE_UPDATE_RECYCLER_VIEW = 42;
     private RecyclerView mRecyclerView;
     private Call<MovieResponse> mCall;
+    private boolean isFavoriteCategory;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +52,14 @@ public class MainActivity extends AppCompatActivity implements Callback<MovieRes
         if (mCall != null) {
             //cancel retrofit call kalau activity sudah didestroy
             mCall.cancel();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK && requestCode == REQUEST_CODE_UPDATE_RECYCLER_VIEW) {
+            loadFavoriteMoviesFromDb();
+            CustomToast.show(this, data.getStringExtra("halo"));
         }
     }
 
@@ -79,8 +94,34 @@ public class MainActivity extends AppCompatActivity implements Callback<MovieRes
         return false;
     }
 
+    /**
+     * Memuat list favorite movie dari database ke adapter
+     */
     private void loadFavoriteMoviesFromDb() {
-
+        Realm realm = null;
+        try {
+            realm = Realm.getDefaultInstance();
+            realm.executeTransaction(
+                    new Realm.Transaction() {
+                        @Override
+                        public void execute(Realm realm) {
+                            List<Movie> movieList = new ArrayList<Movie>();
+                            RealmResults<FavoriteMovie> favoriteMovies = realm
+                                    .where(FavoriteMovie.class)
+                                    .findAll();
+                            for (FavoriteMovie favoriteMovie : favoriteMovies) {
+                                movieList.add(FavoriteMovie.toMovie(favoriteMovie));
+                            }
+                            showMovieList(movieList);
+                        }
+                    }
+            );
+            isFavoriteCategory = true;
+        } finally {
+            if (realm != null) {
+                realm.close();
+            }
+        }
     }
 
     private void initRecyclerView() {
@@ -121,6 +162,7 @@ public class MainActivity extends AppCompatActivity implements Callback<MovieRes
         if (movieResponse != null) {
             List<Movie> movieList = movieResponse.getResults();
             showMovieList(movieList);
+            isFavoriteCategory = false;
         }
     }
 
@@ -162,6 +204,10 @@ public class MainActivity extends AppCompatActivity implements Callback<MovieRes
         openDetailActivityIntent.putExtra(DetailActivity.MOVIE_KEY, movieData);
 
         // Start DetailActivity
-        startActivity(openDetailActivityIntent);
+        if (isFavoriteCategory) {
+            startActivityForResult(openDetailActivityIntent, REQUEST_CODE_UPDATE_RECYCLER_VIEW);
+        } else {
+            startActivity(openDetailActivityIntent);
+        }
     }
 }
