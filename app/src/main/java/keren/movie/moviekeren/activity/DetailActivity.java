@@ -1,8 +1,8 @@
 package keren.movie.moviekeren.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.NavUtils;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -44,6 +44,7 @@ public class DetailActivity extends AppCompatActivity {
     private Call<ReviewResponse> mRequestReviewCall;
     private MenuItem mMenuItemFavorite;
     private boolean mIsFavoriteMovie;
+    private boolean mFavoriteMovieClicked;
 
     @BindView(R.id.tv_original_title)
     TextView tvOriginalTitle;
@@ -106,6 +107,16 @@ public class DetailActivity extends AppCompatActivity {
         mRequestReviewCall.cancel();
     }
 
+    @Override
+    public void onBackPressed() {
+        Intent resultIntent = new Intent();
+        resultIntent.putExtra("halo", "apa?");
+        if (mFavoriteMovieClicked) {
+            setResult(RESULT_OK, resultIntent);
+        }
+        super.onBackPressed();
+    }
+
     /**
      * Membuat back button
      */
@@ -133,11 +144,13 @@ public class DetailActivity extends AppCompatActivity {
         switch (actionId) {
             case android.R.id.home: {
                 // kembali ke parent Activity
-                NavUtils.navigateUpFromSameTask(this);
+                // NavUtils.navigateUpFromSameTask(this);
+                onBackPressed();
                 return true;
             }
             case R.id.action_favorite: {
                 toggleFavorite();
+                mFavoriteMovieClicked = true;
                 return true;
             }
         }
@@ -269,5 +282,4 @@ public class DetailActivity extends AppCompatActivity {
             }
         });
     }
-
 }
