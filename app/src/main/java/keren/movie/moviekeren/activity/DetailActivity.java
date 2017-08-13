@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -31,6 +32,7 @@ import keren.movie.moviekeren.network.model.Video;
 import keren.movie.moviekeren.network.model.VideoResponse;
 import keren.movie.moviekeren.network.retrofit.MovieService;
 import keren.movie.moviekeren.network.retrofit.ServiceGenerator;
+import keren.movie.moviekeren.view.Generator;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -271,7 +273,12 @@ public class DetailActivity extends AppCompatActivity {
                 if (reviewResponse != null) {
                     List<Review> reviewList = reviewResponse.getResults();
                     for (Review review : reviewList) {
-                        Log.d(TAG, review.getContent());
+                        View reviewRow = Generator.getReview(
+                                DetailActivity.this,
+                                review.getAuthor(),
+                                review.getContent()
+                        );
+                        llReviewContainer.addView(reviewRow);
                     }
                 }
             }
