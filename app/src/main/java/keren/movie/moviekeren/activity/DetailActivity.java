@@ -6,7 +6,6 @@ import android.support.annotation.NonNull;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -33,6 +32,7 @@ import keren.movie.moviekeren.network.model.VideoResponse;
 import keren.movie.moviekeren.network.retrofit.MovieService;
 import keren.movie.moviekeren.network.retrofit.ServiceGenerator;
 import keren.movie.moviekeren.view.Generator;
+import keren.movie.moviekeren.view.VideoView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -246,7 +246,11 @@ public class DetailActivity extends AppCompatActivity {
                 if (videoResponse != null) {
                     List<Video> videoList = videoResponse.getResults();
                     for (Video video : videoList) {
-                        Log.d(TAG, video.getName());
+                        VideoView rowVideo = new VideoView(DetailActivity.this);
+                        rowVideo.setVideoThumbnail(video.getId());
+                        rowVideo.setTitle(video.getName());
+                        rowVideo.setType(video.getType());
+                        llVideoContainer.addView(rowVideo);
                     }
                 }
             }
