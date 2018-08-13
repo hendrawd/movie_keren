@@ -56,11 +56,23 @@
             android:padding="@dimen/detail_content_padding"
             tools:text="2 May 2017"/>
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/black"
+            />
+
         <LinearLayout
             android:id="@+id/ll_video_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/black"
+            />
 
         <LinearLayout
             android:id="@+id/ll_review_container"
